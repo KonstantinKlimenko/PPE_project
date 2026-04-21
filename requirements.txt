@@ -1,0 +1,13 @@
+ultralytics
+opencv-python
+pillow
+pandas
+numpy<2
+matplotlib
+seaborn
+pyyaml
+tqdm
+fastapi
+uvicorn
+python-multipart
+streamlit
