@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from contextlib import asynccontextmanager
 import io
 import os
 from pathlib import Path
@@ -15,14 +16,7 @@ os.environ.setdefault("YOLO_CONFIG_DIR", str(ROOT / "Ultralytics"))
 from ultralytics import YOLO  # noqa: E402
 
 
-DEFAULT_MODEL_PATH = (
-    ROOT
-    / "runs"
-    / "detect"
-    / "ppe_yolo11n_pretrained_5ep_frac10"
-    / "weights"
-    / "best.pt"
-)
+DEFAULT_MODEL_PATH = ROOT / "models" / "ppe_yolo11n_baseline.pt"
 MODEL_PATH = Path(os.getenv("MODEL_PATH", DEFAULT_MODEL_PATH))
 
 
@@ -40,22 +34,27 @@ class PredictionResponse(BaseModel):
     detections: list[Detection]
 
 
-app = FastAPI(
-    title="Construction PPE Detection API",
-    description="YOLO-based API for detecting helmets, vests, heads, and persons.",
-    version="0.1.0",
-)
-
-
 model: YOLO | None = None
 
 
-@app.on_event("startup")
-def load_model() -> None:
+@asynccontextmanager
+async def lifespan(_: FastAPI):
     global model
     if not MODEL_PATH.exists():
         raise FileNotFoundError(f"Model weights not found: {MODEL_PATH}")
     model = YOLO(MODEL_PATH)
+    try:
+        yield
+    finally:
+        model = None
+
+
+app = FastAPI(
+    title="Construction PPE Detection API",
+    description="YOLO-based API for detecting helmets, safety vests, and heads.",
+    version="0.1.0",
+    lifespan=lifespan,
+)
 
 
 @app.get("/health")

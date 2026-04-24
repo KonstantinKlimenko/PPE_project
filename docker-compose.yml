@@ -3,8 +3,9 @@ services:
     build: .
     container_name: ppe-detection-demo
     ports:
-      - "8501:8501"
+      - "8501:7860"
     environment:
+      PORT: 7860
       YOLO_CONFIG_DIR: /app/Ultralytics
       MODEL_PATH: /app/models/ppe_yolo11n_baseline.pt
     volumes:

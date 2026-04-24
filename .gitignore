@@ -22,3 +22,8 @@ reports/
 kaggle.json
 Ultralytics/
 .ultralytics/
+.vscode/
+app/lesson_*.py
+src/lesson_*.py
+src/Lesson_*.py
+reports/lesson_*

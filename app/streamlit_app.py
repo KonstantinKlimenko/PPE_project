@@ -19,14 +19,7 @@ os.environ.setdefault("YOLO_CONFIG_DIR", str(ROOT / "Ultralytics"))
 from ultralytics import YOLO  # noqa: E402
 
 
-DEFAULT_MODEL_PATH = (
-    ROOT
-    / "runs"
-    / "detect"
-    / "ppe_yolo11n_pretrained_5ep_frac10"
-    / "weights"
-    / "best.pt"
-)
+DEFAULT_MODEL_PATH = ROOT / "models" / "ppe_yolo11n_baseline.pt"
 MODEL_PATH = Path(os.getenv("MODEL_PATH", DEFAULT_MODEL_PATH))
 PREDICTIONS_DIR = ROOT / "reports" / "predictions"
 FEEDBACK_PATH = ROOT / "reports" / "feedback.csv"
@@ -328,7 +321,7 @@ st.markdown(
 left, right = st.columns([1.4, 1])
 
 with left:
-    st.image(annotated_image, use_container_width=True)
+    st.image(annotated_image, width="stretch")
 
 with right:
     if status_kind == "warning":
@@ -338,7 +331,7 @@ with right:
     else:
         st.info(f"{status_title}. {status_text}")
 
-    st.dataframe(display_table, use_container_width=True, hide_index=True)
+    st.dataframe(display_table, width="stretch", hide_index=True)
     st.download_button(
         "Скачать результат",
         data=image_to_bytes(annotated_image),
